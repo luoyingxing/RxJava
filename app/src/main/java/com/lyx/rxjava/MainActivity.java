@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -23,8 +24,13 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -38,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("CheckResult")
-    public void test(View view) {
+    public void rxJava2(View view) {
 //        create();
 //        thread();
 //        map();
@@ -251,4 +257,88 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private String newsURL = "http://v.juhe.cn/toutiao/index?type=%E5%A4%B4%E6%9D%A1&key=1e055d822e828e1f0d78ef05cde6f5f2";
+
+    public void okHttp3(View view) {
+//        get();
+        post();
+    }
+
+    private void get() {
+        String url = "http://wwww.baidu.com";
+        OkHttpClient okHttpClient = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .get()//默认就是GET请求，可以不写
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "onFailure: ");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d(TAG, "onResponse: " + response.body().string());
+            }
+        });
+    }
+
+    private void post() {
+        MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
+        String requestBody = "I am Jdqm.";
+        Request request = new Request.Builder()
+                .url("https://api.github.com/markdown/raw")
+                .post(RequestBody.create(mediaType, requestBody))
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new LInterceptor())
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "onFailure: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.i(TAG, response.protocol() + " " + response.code() + " " + response.message());
+                Headers headers = response.headers();
+                for (int i = 0; i < headers.size(); i++) {
+                    Log.d(TAG, headers.name(i) + ":" + headers.value(i));
+                }
+                Log.w(TAG, "onResponse: " + response.body().string());
+            }
+        });
+
+    }
+
+    private class LInterceptor implements Interceptor {
+
+        @Override
+        public Response intercept(Interceptor.Chain chain) throws IOException {
+            Request req = chain.request();
+
+            long t1 = System.nanoTime();
+            Log.i(TAG, String.format("Sending request %s on %s%n%s", req.url(), chain.connection(), req.headers()));
+
+            //官方文档中，少了下面的代码
+            Request request = new Request.Builder()
+                    .url("https://publicobject.com/helloworld.txt")
+                    .build();
+
+            Response response = chain.proceed(request);
+
+            long t2 = System.nanoTime();
+            Log.i(TAG, String.format("Received response for %s in %.1fms%n%s",
+                    response.request().url(), (t2 - t1) / 1e6d, response.headers()));
+
+            return response;
+        }
+    }
+
+    public void retrofit2(View view) {
+
+    }
 }
