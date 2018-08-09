@@ -9,6 +9,7 @@ import android.view.View;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -33,6 +34,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivity";
@@ -339,6 +342,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retrofit2(View view) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://v.juhe.cn/toutiao/")  //Retrofit2的baseUlr 必须以 /（斜线） 结束，不然会抛出一个IllegalArgumentException
+                .addConverterFactory(GsonConverterFactory.create())   //添加Gson转换器
+                .build();
+
+        NewsService service = retrofit.create(NewsService.class);
+
+        retrofit2.Call<NewsData> call = service.getNews("1e055d822e828e1f0d78ef05cde6f5f2", "%E5%A4%B4%E6%9D%A1");
+
+        call.enqueue(new retrofit2.Callback<NewsData>() {
+            @Override
+            public void onResponse(retrofit2.Call<NewsData> call, retrofit2.Response<NewsData> response) {
+                NewsData data = response.body();
+
+                if (data != null && null != data.getResult()) {
+                    List<News> list = data.getResult().getData();
+                    for (News news : list) {
+                        Log.i(TAG, news.getTitle());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<NewsData> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
 
     }
 }
