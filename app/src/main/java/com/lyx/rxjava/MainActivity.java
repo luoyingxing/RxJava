@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.lyx.rxjava.net.BasicResponse;
+import com.lyx.rxjava.net.DefaultObserver;
+import com.lyx.rxjava.net.IdeaApi;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,6 +47,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        IdeaApi.getApiService()
+//                .getNews("1e055d822e828e1f0d78ef05cde6f5f2", "%E5%A4%B4%E6%9D%A1")
+////                .compose(this.>>bindToLifecycle())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new DefaultObserver<BasicResponse>(this) {
+//                    @Override
+//                    public void onSuccess(BasicResponse response) {
+//
+//                    }
+//                });
+
+        IdeaApi.getApiService()
+                .getNews("1e055d822e828e1f0d78ef05cde6f5f2", "%E5%A4%B4%E6%9D%A1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<BasicResponse>() {
+                    @Override
+                    public void onSuccess(BasicResponse response) {
+
+                    }
+                });
+
     }
 
     @SuppressLint("CheckResult")
