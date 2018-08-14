@@ -6,32 +6,31 @@ package com.lyx.rxjava.net;
  * Created by luoyingxing on 2018/8/13.
  */
 public class BasicResponse<T> {
-    private int code;
-    private String message;
-    private T content;
+    private String reason;
+    private int error_code;
+    private T result;
 
-    public T getContent() {
-        return content;
+    public String getReason() {
+        return reason;
     }
 
-    public void setContent(T content) {
-        this.content = content;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
-
-    public int getCode() {
-        return code;
+    public int getError_code() {
+        return error_code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setError_code(int error_code) {
+        this.error_code = error_code;
     }
 
-    public String getMessage() {
-        return message;
+    public T getResult() {
+        return result;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setResult(T result) {
+        this.result = result;
     }
 }

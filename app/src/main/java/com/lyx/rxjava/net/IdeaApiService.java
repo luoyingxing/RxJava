@@ -1,5 +1,7 @@
 package com.lyx.rxjava.net;
 
+import com.lyx.rxjava.Result;
+
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -8,7 +10,7 @@ import retrofit2.http.Query;
  * <p/>
  * Created by luoyingxing on 2018/8/13.
  */
-public interface IdeaApiService<T> {
+public interface IdeaApiService {
     /**
      * 网络请求超时时间毫秒
      */
@@ -17,5 +19,5 @@ public interface IdeaApiService<T> {
     String HOST = "http://v.juhe.cn/";
 
     @GET("toutiao/index")
-    Observable<T> getNews(@Query(value = "key") String key, @Query(value = "type") String type);
+    Observable<BasicResponse<Result>> getNews(@Query(value = "key") String key, @Query(value = "type") String type);
 }

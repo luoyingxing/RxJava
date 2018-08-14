@@ -64,6 +64,7 @@ public class IdeaApi {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(IdeaApiService.HOST)
                 .build();
+
         service = retrofit.create(IdeaApiService.class);
     }
 

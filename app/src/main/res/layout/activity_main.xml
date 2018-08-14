@@ -48,4 +48,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.532" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:onClick="frame"
+        android:text="Frame"
+        android:textColor="#dd8a12"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="300dp" />
+
 </android.support.constraint.ConstraintLayout>
