@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.lyx.rxjava.net.BasicResponse;
 import com.lyx.rxjava.net.DefaultObserver;
 import com.lyx.rxjava.net.IdeaApi;
+import com.lyx.rxjava.network.RxRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -381,14 +382,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void frame() {
-        IdeaApi.getApiService()
+//        IdeaApi.getApiService()
+//                .getNews("1e055d822e828e1f0d78ef05cde6f5f2", "%E5%A4%B4%E6%9D%A1")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new DefaultObserver<BasicResponse<Result>>() {
+//                    @Override
+//                    public void onSuccess(BasicResponse<Result> response) {
+//                        Log.i("IdeaApi",response.toString());
+//                    }
+//                });
+
+        RxRequest.getInstance()
+                .getApiService()
                 .getNews("1e055d822e828e1f0d78ef05cde6f5f2", "%E5%A4%B4%E6%9D%A1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultObserver<BasicResponse<Result>>() {
+                .subscribe(new Observer<NewsData>() {
                     @Override
-                    public void onSuccess(BasicResponse<Result> response) {
-                        Log.i("IdeaApi",response.toString());
+                    public void onSubscribe(Disposable d) {
+                        Log.i("RxRequest", "onSubscribe");
+                    }
+
+                    @Override
+                    public void onNext(NewsData newsData) {
+                        for (News news : newsData.getResult().getData()) {
+                            Log.i("RxRequest", news.getTitle());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.i("RxRequest", "onError");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("RxRequest", "onComplete");
                     }
                 });
     }
